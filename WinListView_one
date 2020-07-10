@@ -13,7 +13,7 @@ For i = 1 To 500 Step 1
 	For Iterator = 1 To 3 Step 1
 
 '操作1，固定坐标处添加算法块
-		With Window("Name")
+		With Window("UWIEC")
 			.Activate
 			.Window("Name_1").WinObject("Afx:400000:b").Click 334,216
 			.Window("Name_1").WinObject("Afx:400000:b").Click 334, 216, micRightBtn
@@ -26,7 +26,7 @@ For i = 1 To 500 Step 1
 Wait i/4
 
 '操作2，固定坐标处算法块引脚添加链接
-		With Window("Name")
+		With Window("UWIEC")
 			.Window("Name_1").WinObject("Afx:400000:b").Click 706,152
 			.Window("Name_1").WinObject("Afx:400000:b").Click 706,152, micRightBtn
 			.WinMenu("ContextMenu").Select "选择并连接记录点"
@@ -63,7 +63,7 @@ End With
 Wait i+j
 
 '开启版本号显示控件
-	With Window("Name")
+	With Window("UWIEC")
 		.WinToolbar("主工具条").Press 16
 		.WinToolbar("主工具条").Press 17
 '定义存储栏位名称的数组
