@@ -1,0 +1,20 @@
+'获取WinListVie控件中所有栏位值
+ReDim Columns(4)
+Dim cColumns
+With Window("UWRdb")
+	.Activate
+End With
+	Set obj = Window("UWRdb ").WinListView("SysListView32")
+	cColumns = Obj.ColumnCount()
+	For iColumn = 0 To cColumns - 1
+		Columns(iColumn) = Obj.GetColumnHeader(iColumn)
+	Next
+	cItems = Obj.GetItemsCount
+	For iItems = 0 To cItems - 1
+		str ="第 "&iItems+1&" 个列表"& vbCr
+		For iColumn =0 To cColumns - 1
+			str = str &Columns(iColumn)&" = "& Obj.GetSubItem(iItems ,Columns(iColumn)) & vbCr
+		Next
+		Msgbox str
+	Next
+Set obj = nothing
