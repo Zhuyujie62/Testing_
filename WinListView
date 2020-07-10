@@ -1,0 +1,89 @@
+
+'循环遍历各操作，每执行3次组合操作，自动检测1次版本号，版本号未实时刷新，则手动刷新，所有内容共执行500次。
+' Name 前缀对应窗口标题，非实际窗口标题
+
+'定义两个随机值，在各个操作间做随机的等待时长
+Dim i,j
+i = RandomNumber(1,10)
+j = RandomNumber(1,5)
+
+'外循环，将所有内容执行500次。
+For i = 1 To 500 Step 1
+'遍历执行各操作 
+	For Iterator = 1 To 3 Step 1
+
+'操作1，固定坐标处添加算法块
+		With Window("Name")
+			.Activate
+			.Window("Name_1").WinObject("Afx:400000:b").Click 334,216
+			.Window("Name_1").WinObject("Afx:400000:b").Click 334, 216, micRightBtn
+			.WinMenu("ContextMenu").Select "插入算法块..."
+			.Dialog("Name_对话框").WinListView("WinListView").Select "1"
+			.Dialog("Name_对话框").WinButton("确定").Click
+		End With
+
+'等待4分之i秒
+Wait i/4
+
+'操作2，固定坐标处算法块引脚添加链接
+		With Window("Name")
+			.Window("Name_1").WinObject("Afx:400000:b").Click 706,152
+			.Window("Name_1").WinObject("Afx:400000:b").Click 706,152, micRightBtn
+			.WinMenu("ContextMenu").Select "选择并连接记录点"
+			.Dialog("全控制站单记录实时属性选择").WinListView("SysListView32").Select 1
+			.Dialog("全控制站单记录实时属性选择").WinButton("确认").Click
+
+'操作3，链接两算法块引脚			
+                        With .Window("Name_1")
+				.WinObject("Afx:400000:b").Drag 781,241
+				.WinObject("Afx:400000:b").Drop 707,415
+
+Wait j/4
+
+'操作4，删除操作3中两引脚连接
+				.WinObject("Afx:400000:b").Click 752,334
+				.WinObject("Afx:400000:b").Type  micDel
+
+Wait i/3
+
+'操作5，为引脚赋常量值0
+				.WinObject("Afx:400000:b").Click 686,137
+				.WinEdit("Edit_3").Set "0"
+	
+Wait j/3
+
+'操作6，删除操作1中添加的算法块
+				.WinObject("Afx:400000:b").Click 370,440
+				.WinObject("Afx:400000:b").Type  micDel
+			End With	
+End With
+	Next
+'内循环结束
+
+Wait i+j
+
+'开启版本号显示控件
+	With Window("Name")
+		.WinToolbar("主工具条").Press 16
+		.WinToolbar("主工具条").Press 17
+'定义存储栏位名称的数组
+		ReDim Columns(4)
+		Set obj = .Dialog("Name_2").WinListView("SysListView32")
+'栏位名称与数组下标对应关系
+		Columns(2) = Obj.GetColumnHeader(2)
+		Columns(3) = Obj.GetColumnHeader(3)
+'获取固定行列中的值，即版本号
+		opIEC = Obj.GetSubItem(4 ,Columns(2))
+		csIEC = Obj.GetSubItem(4 ,Columns(3))
+'对比判断版本号刷新情况，并作出相应操作
+		If opIEC = csIEC Then
+			.Dialog("Name_2").WinButton("退出").Click
+			Else
+			.Dialog("Name_2").WinButton("下装重载").Click
+			mist = mist + 1
+			print "刷新失败次数：" & mist
+		End If
+		Set obj = nothing
+	End with
+	print "迭代次数：" & Iterator
+Next
